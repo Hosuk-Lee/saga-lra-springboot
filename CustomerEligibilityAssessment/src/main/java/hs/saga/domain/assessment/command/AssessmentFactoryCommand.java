@@ -25,7 +25,7 @@ public class AssessmentFactoryCommand {
                         .transactionPurpose(transactionPurpose)
                         .productCode(productCode)
                         .assessmentAt(LocalDateTime.now())
-                        .status(true)
+                        .status("Active")
                         .message("")
                         .build()
         );

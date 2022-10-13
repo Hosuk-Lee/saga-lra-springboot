@@ -1,5 +1,6 @@
 package hs.saga.config.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
+//@AllArgsConstructor
 public abstract class BaseEntity {
 
 //    @Id

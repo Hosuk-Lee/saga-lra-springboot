@@ -2,6 +2,7 @@ package hs.saga.domain.assessment.entity;
 
 import hs.saga.config.entity.BaseEntity;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,9 +30,10 @@ public class CustomerEligibilityAssessment extends BaseEntity {
     private LocalDateTime assessmentAt;
 
     @Column
-    private boolean status;
-
+    protected String status;
     @Column
     private String message;
+    @Column
+    private String lraId;
 
 }
