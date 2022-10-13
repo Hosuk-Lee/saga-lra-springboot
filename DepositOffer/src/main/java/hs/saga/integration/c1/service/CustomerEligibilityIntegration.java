@@ -1,8 +1,12 @@
 package hs.saga.integration.c1.service;
 
+import hs.saga.config.camel.CamelThreadLocal;
 import hs.saga.integration.c1.dto.AssessmentRequestSchema;
 import hs.saga.integration.c1.dto.AssessmentResponseSchema;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -34,8 +38,15 @@ public class CustomerEligibilityIntegration {
                 .encode()
                 .build()
                 .toUri();
+        System.out.println("URI : "+uri);
 
-        System.out.println(uri);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        // headers.add("Authorization", "웹 헤더에 있던 값");
+        headers.add("Long-Running-Action", CamelThreadLocal.getLra());
+
+        System.out.println("Headers : " + headers);
 
         // object를 넣어주면 object mapper가 json으로 바꿔주고
         // rest template에서 http body에 json을 넣어줄 것이다.
@@ -44,9 +55,16 @@ public class CustomerEligibilityIntegration {
                 .productCode(productCode)
                 .build();
 
-        //RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<AssessmentResponseSchema> response = restTemplate.postForEntity(uri, req, AssessmentResponseSchema.class);
-        // uri에 req object를 보내서 응답은 UserResponse.class타입으로 받을 것이다!!
+        // 기본
+//        ResponseEntity<AssessmentResponseSchema> response
+//                = restTemplate.postForEntity(uri, req, AssessmentResponseSchema.class);
+
+        // 헤더변경
+        HttpEntity httpEntity = new HttpEntity(req,headers);
+        ResponseEntity<AssessmentResponseSchema> response
+                = restTemplate.postForEntity(uri, httpEntity, AssessmentResponseSchema.class);
+
+        // Response 출력
         System.out.println(response.getStatusCode());
         System.out.println(response.getHeaders());
         System.out.println(response.getBody());

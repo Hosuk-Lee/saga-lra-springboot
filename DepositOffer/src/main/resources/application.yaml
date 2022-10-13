@@ -1,5 +1,32 @@
+demo:
+  stock-service-hostname: 10.17.211.52
+  stock-service-port: 8380
+  order-service-hostname: 10.17.211.52
+  order-service-port: 8280
+  assessment-service-hostname: 10.17.211.52
+  assessment-service-port: 9102
+
+
 server:
   port: 9101 #0 #${random.int(10000,51000)}
+
+camel:
+  health:
+    enabled: false
+    indicator:
+      enabled: true
+
+  component:
+    servlet:
+      mapping:
+        context-path: /camel/*
+
+  service:
+    lra:
+      enabled: true
+      coordinator-url: http://10.17.211.52:8080
+      #참가자 SAGA-APP
+      local-participant-url: http://10.17.211.52:9101/camel
 
 spring:
   profiles.active: local

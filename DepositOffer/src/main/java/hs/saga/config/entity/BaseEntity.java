@@ -17,10 +17,6 @@ import java.time.LocalDateTime;
 @Setter
 public abstract class BaseEntity {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
-//    private long id;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

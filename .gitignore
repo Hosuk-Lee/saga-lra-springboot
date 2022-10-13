@@ -7,3 +7,5 @@ target
 .vscode
 .classpath
 bin
+
+.DS_Store

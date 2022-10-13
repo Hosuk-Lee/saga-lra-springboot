@@ -34,4 +34,12 @@ public class DepositOfferEntity extends BaseEntity {
     @Embedded
     CustomerEligibilityAssessmentEntity customerEligibilityAssessment;
 
+    @Column
+    private String status;
+    @Column
+    private String message;
+    @Column
+    private String lraId;
+
+
 }
