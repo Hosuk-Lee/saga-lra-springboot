@@ -32,6 +32,14 @@ public class TestRouter extends RouteBuilder {
                 .bindingMode(RestBindingMode.json)
                 .dataFormatProperty("prettyPrint", "true");
 
+        onException(Exception.class)
+                .handled(false)
+                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(202))
+                .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
+                .setBody(constant(""))
+                .log("Error reported: ${exception.message}")
+                .transform().simple("Error reported: ${exception.message} - Purchase not processed.");
+
         rest("/purchases").description("Purchases endpoint")
                 .produces("application/json")
                 .post("/{itemId}/{quantity}").outType(Order.class).description("Request a new purchase")
@@ -68,13 +76,7 @@ public class TestRouter extends RouteBuilder {
                 })
 
                 .log("-- END of ROUTE --");
-        onException(Exception.class)
-                .handled(false)
-                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(202))
-                .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
-                .setBody(constant(""))
-                .log("Error reported: ${exception.message}")
-                .transform().simple("Error reported: ${exception.message} - Purchase not processed.");
+
 
     }
 }

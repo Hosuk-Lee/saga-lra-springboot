@@ -87,7 +87,7 @@ public class DepositOfferService {
         entity.setLraId(param.getLraId());
 
         depositOfferRepository.save(entity);
-        log.info("[FAIL] Saga Service compensate done");
+        log.info("[OK] Saga Service complete done");
     }
 
     public void compensate(DepositOfferSagaDto param){
