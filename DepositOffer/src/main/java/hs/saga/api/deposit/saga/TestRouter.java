@@ -32,25 +32,13 @@ public class TestRouter extends RouteBuilder {
                 .bindingMode(RestBindingMode.json)
                 .dataFormatProperty("prettyPrint", "true");
 
-
-        onException(Exception.class)
-                .handled(false)
-                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(202))
-                .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
-                .setBody(constant(""))
-                .log("Error reported: ${exception.message}")
-                .transform().simple("Error reported: ${exception.message} - Purchase not processed.");
-
         rest("/purchases").description("Purchases endpoint")
                 .produces("application/json")
                 .post("/{itemId}/{quantity}").outType(Order.class).description("Request a new purchase")
                 .param().name("itemId").description("Item identification").type(RestParamType.path).endParam()
                 .param().name("quantity").description("Item quantity").type(RestParamType.path).endParam()
                 .route().routeId("purchaseRoute")
-                //Override received AMOUNT parameter with 123
-                //.setHeader("amount", constant(Long.valueOf("123")))
                 .to("direct:buy");
-
 
         from("direct:buy")
                 .routeId("buyRoute")
@@ -64,16 +52,9 @@ public class TestRouter extends RouteBuilder {
                 .setHeader(Exchange.HTTP_METHOD, simple("POST"))
                 .setHeader(Exchange.HTTP_PATH, simple("${header.itemId}/${header.quantity}"))
                 .to("http4://{{demo.order-service-hostname}}:{{demo.order-service-port}}/camel/orders")
-
-
                 .removeHeader(Exchange.HTTP_URI)
                 .setHeader(Exchange.HTTP_METHOD, simple("POST"))
                 .setHeader(Exchange.HTTP_PATH, simple("${header.itemId}/${header.quantity}"))
-                // Importan: bridgeEndpoint parameter
-                // See also throwExceptionOnFailure=false
-//          .to("http4://localhost:8280/camel/stock/reservations/$simple{header.name}/$simple{header.amount}?bridgeEndpoint=true")
-
-                //.setBody(simple("${null}"))
                 .to("http4://{{demo.stock-service-hostname}}:{{demo.stock-service-port}}/camel/stock/reservations")
 
                 // If quantity was 27 an exception is thrown
@@ -87,5 +68,13 @@ public class TestRouter extends RouteBuilder {
                 })
 
                 .log("-- END of ROUTE --");
+        onException(Exception.class)
+                .handled(false)
+                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(202))
+                .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
+                .setBody(constant(""))
+                .log("Error reported: ${exception.message}")
+                .transform().simple("Error reported: ${exception.message} - Purchase not processed.");
+
     }
 }

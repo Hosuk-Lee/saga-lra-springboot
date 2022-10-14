@@ -37,26 +37,22 @@ public class DepositOfferRouter extends RouteBuilder {
     public void configure() throws Exception {
         from("direct:controllerTest")
         .routeId("DepositOfferRoute")
-.log("## Before Register Saga")
-.to("log:DEBUG?showBody=true&showHeaders=true")
+        .log("## Before Register Saga")
+        .to("log:DEBUG?showBody=true&showHeaders=true")
                 // 여기서부터 Thread 분리됨.
-                // Work
                 .saga().propagation(SagaPropagation.REQUIRED)
                     .compensation("direct:cancelOffer")
                     .completion("direct:completeOffer")
-
         .process(lraSaveProcessor)
-//.bean(lraService, "save")
-//.to("stream:out")
-                .log("## After Register Saga and Call Service Bean")
-.to("log:DEBUG?showBody=true&showHeaders=true")
+        .log("## After Register Saga and Call Service Bean")
+        .to("log:DEBUG?showBody=true&showHeaders=true")
         .bean(depositOfferService)
-.log("## Router Service Done")
-.to("log:DEBUG?showBody=true&showHeaders=true")
+        .log("## Router Service Done")
+        .to("log:DEBUG?showBody=true&showHeaders=true")
         .process(lraRemoveProcessor)
-
-.option("customerId", simple("${header.customerId}"))	// Notice that '.option' is always evaluated before '.bean' executions
-.option("currentDate", simple(String.valueOf(new Date())))	// Notice that '.option' is always evaluated before '.bean' executions
+// Notice that '.option' is always evaluated before '.bean' executions
+.option("customerId", simple("${header.customerId}"))
+.option("currentDate", simple(String.valueOf(new Date())))
         ;
 
         from("direct:cancelOffer")

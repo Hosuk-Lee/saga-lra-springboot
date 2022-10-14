@@ -53,14 +53,27 @@ public class AssessmentRouter extends RouteBuilder {
                 .bean(assessmentService,"compensate")
                 .to("log:DEBUG?showBody=true&showHeaders=true")
                 ;
-
-
         from("direct:completeAssessment")
                 .routeId("completeAssessment")
                 .transform().header("customerId")	// Retrieve the orderId
-                //.bean(orderManagerService, "notifyOrder")
-                //.to("jms:notifyOrder")
-                .log("Assessment ${body} complete");
+                .process((exchange)->{
+                    Map<String, Object> headers = exchange.getIn().getHeaders();
+                    String body = exchange.getIn().getBody(String.class);
+
+                    String param =
+                            exchange.getIn().getHeader("customerId", String.class)
+                                    + "||"
+                                    + exchange.getIn().getHeader("Long-Running-Action", String.class)
+                            ;
+                    exchange.getOut().setBody(param);
+                })
+                .log("Assessment ${body} complete")
+                .bean(assessmentService,"complete")
+                .to("log:DEBUG?showBody=true&showHeaders=true")
+
+        ;
+
+
     }
 }
 
