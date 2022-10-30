@@ -1,6 +1,8 @@
 package hs.saga.integration.c1.service;
 
 import hs.saga.config.camel.CamelThreadLocal;
+import hs.saga.config.exception.BusinessException;
+import hs.saga.config.rest.integration.util.RequestUtil;
 import hs.saga.integration.c1.dto.AssessmentRequestSchema;
 import hs.saga.integration.c1.dto.AssessmentResponseSchema;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +15,20 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class CustomerEligibilityIntegration {
 
     @Autowired
     RestTemplate restTemplate;
+
+    private final RequestUtil requestUtil;
+
+    public CustomerEligibilityIntegration(RequestUtil requestUtil) {
+        this.requestUtil = requestUtil;
+    }
 
     public AssessmentResponseSchema call(
             String customerId,
@@ -68,6 +78,35 @@ public class CustomerEligibilityIntegration {
         System.out.println(response.getStatusCode());
         System.out.println(response.getHeaders());
         System.out.println(response.getBody());
+        return response.getBody();
+    }
+
+    public AssessmentResponseSchema call2(
+            String customerId,
+            String productCode
+    ){
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("accept", MediaType.APPLICATION_JSON_VALUE);
+        httpHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+
+        AssessmentRequestSchema req = AssessmentRequestSchema.builder()
+                .customerId(customerId)
+                .productCode(productCode)
+                .build();
+
+        ResponseEntity<AssessmentResponseSchema> response;
+        try{
+            // response = customerAssessmentApiCustomerassessment.postCustomerAssessment(request, httpHeaders);
+            // Prepare params
+            Map<String, Object> pathParams = new HashMap<String, Object>();
+            Map<String, Object> queryParams = new HashMap<String, Object>();
+            Object _bodyObj = null;
+            _bodyObj = req;
+            response = requestUtil.requestForOne("custas-customerassessment", "/customer-assessment", "POST", AssessmentResponseSchema.class, _bodyObj, pathParams, queryParams, httpHeaders);
+        }catch (Exception e){
+            throw new BusinessException(500,e.getMessage());
+        }
+
         return response.getBody();
     }
 }
