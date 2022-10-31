@@ -102,7 +102,7 @@ public class CustomerEligibilityIntegration {
             Map<String, Object> queryParams = new HashMap<String, Object>();
             Object _bodyObj = null;
             _bodyObj = req;
-            response = requestUtil.requestForOne("custas-customerassessment", "/customer-assessment", "POST", AssessmentResponseSchema.class, _bodyObj, pathParams, queryParams, httpHeaders);
+            response = requestUtil.requestForOne("customer-assessment", "/api/customer-eligibility-assessment", "POST", AssessmentResponseSchema.class, _bodyObj, pathParams, queryParams, httpHeaders);
         }catch (Exception e){
             throw new BusinessException(500,e.getMessage());
         }

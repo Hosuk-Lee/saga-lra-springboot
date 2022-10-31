@@ -76,3 +76,11 @@ spring:
 logging.level:
 #  org.springframework: debug
   org.hibernate.type.descriptor.sql: debug
+
+
+de.cp.consumer.api.binding:
+  bindingProperties:
+    customer-assessment :
+      url: ""
+      k5PropagateSecurityToken:
+      caCert: ""

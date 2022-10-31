@@ -3,7 +3,7 @@
 package hs.saga.config.rest.integration.service;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.kbstar.saga.sagadpoffr.sdk.integration.config.AccessTokenConfiguration;
+import hs.saga.config.rest.integration.config.AccessTokenConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -21,8 +21,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
-import static de.knowis.cp.util.lang.ByteUtil.limit;
-import static de.knowis.cp.util.lang.ByteUtil.transform;
+import static hs.saga.config.rest.util.ByteUtil.limit;
+import static hs.saga.config.rest.util.ByteUtil.transform;
 
 @Service
 public class AccessTokenService {
